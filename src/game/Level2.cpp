@@ -4044,44 +4044,54 @@ bool ChatHandler::HandleJailCommand(const char *args)
 
 	Player *player = objmgr.GetPlayer(name.c_str());
 
-	if(!player)
+	if(player)
+	{
+		// GMs cannot be jailed
+		if(player->GetSession()->GetSecurity() != SEC_PLAYER)
+		{
+			PSendSysMessage("%s is a GM and cannot be jailed", name.c_str());
+			return true;
+		}
+
+		if(player->IsBeingTeleported())
+		{
+			PSendSysMessage(LANG_IS_TELEPORTED, player->GetName());
+			return true;
+		}
+
+		// Stop flight if player using taxi
+		if(player->isInFlight())
+		{
+			player->GetMotionMaster()->MovementExpired();
+			player->m_taxi.ClearTaxiDestinations();
+		}
+
+		if(player->IsInJail())
+		{
+			PSendSysMessage("Player %s is already in jail.", name.c_str());
+			return true;
+		}
+
+		// Teleport player to jail - Current position is in a huge box (zone 3817)
+		//                 map  X  Y    Z   orient.
+		player->TeleportTo( 13, 7, 1, -144, 3 );
+		ChatHandler(player).PSendSysMessage("You have been jailed!");
+
+		PSendSysMessage("Player %s is now in jail.", name.c_str());
+	}
+	else if(uint64 guid = objmgr.GetPlayerGUIDByName(name)) // if player is offline
+	{
+		PSendSysMessage("Player %s is now in jail (offline)", name.c_str());
+
+		Player::SavePositionInDB(13, 7, 1, -144, 3, 3817, guid);
+		return true;
+	}
+	else
 	{
 		PSendSysMessage(LANG_NO_PLAYER, args);
 		return true;
 	}
 
-	// GMs cannot be jailed
-	if(player->GetSession()->GetSecurity() != SEC_PLAYER)
-	{
-		PSendSysMessage("Player is a GM.");
-		return true;
-	}
-
-	if(player->IsBeingTeleported())
-	{
-		PSendSysMessage(LANG_IS_TELEPORTED, player->GetName());
-		return true;
-	}
-
-	// Stop flight if player using taxi
-	if(player->isInFlight())
-	{
-		player->GetMotionMaster()->MovementExpired();
-		player->m_taxi.ClearTaxiDestinations();
-	}
-
-	if(player->IsInJail())
-	{
-		PSendSysMessage("Player is already in jail.");
-		return true;
-	}
-
-	// Teleport player to jail - Current position is in a huge box (zone 3817)
-	//                 map  X  Y    Z   orient.
-	player->TeleportTo( 13, 7, 1, -144, 3 );
-	ChatHandler(player).PSendSysMessage("You have been jailed!");
-
-	PSendSysMessage("Player is now in jail.");
 	return true;
 }
 
@@ -4101,26 +4111,49 @@ bool ChatHandler::HandleUnjailCommand(const char *args)
 
 	Player *player = objmgr.GetPlayer(name.c_str());
 
-	if(!player)
+	if(player)
 	{
-		PSendSysMessage(LANG_NO_PLAYER, args);
+		if(!player->IsInJail())
+		{
+			PSendSysMessage("Player %s is not in jail and cannot be unjailed.", name.c_str());
+			return true;
+		}
+
+		// Teleport to player's homebind when unjailed
+		player->TeleportTo(player->m_homebindMapId, player->m_homebindX, player->m_homebindY, player->m_homebindZ, 0);
+
+		PSendSysMessage("Player %s is now unjailed.", name.c_str());
+		ChatHandler(player).PSendSysMessage("You have been removed from the jail.");
 		return true;
 	}
-
-	if(!player->IsInJail())
+	else if(uint64 guid = objmgr.GetPlayerGUIDByName(name)) // player is offline
 	{
-		PSendSysMessage("Player is not in jail and cannot be unjailed.");
-		return true;
-	}
+		// Load homebind location from DB
+		QueryResult *result = CharacterDatabase.PQuery("SELECT map,zone,position_x,position_y,position_z FROM character_homebind WHERE guid = '%u'", guid);
+		if (result)
+		{
+			Field *fields = result->Fetch();
+			
+			uint16 hb_map = fields[0].GetUInt32();
+			uint16 hb_zone = fields[1].GetUInt16();
+			float hb_x = fields[2].GetFloat();
+			float hb_y = fields[3].GetFloat();
+			float hb_z = fields[4].GetFloat();
+			delete result;
 
-	// Teleport to main cities - I will change this later
-	if(player->GetTeam() == HORDE)
-		player->TeleportTo(1,1630.178955,-4373.479492,31.249947,3.55); // Orgrimmar
+			// save homebind position
+			Player::SavePositionInDB(hb_map, hb_x, hb_y, hb_z, 0, hb_zone, guid);
+
+			PSendSysMessage("Player %s is now unjailed.", name.c_str());
+		}
+		else
+		{
+			PSendSysMessage("Player doesnt have homebind and cannot be unjailed");
+			return true;
+		}
+	}
 	else
-		player->TeleportTo(0,-8829.375,626.014465,93.975227,3.94); // Stormwind
+		PSendSysMessage(LANG_NO_PLAYER, args);
 
-	PSendSysMessage("Player is now unjailed.");
-
-	ChatHandler(player).PSendSysMessage("You have been removed from the jail.");
 	return true;
 }
