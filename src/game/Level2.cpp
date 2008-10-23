@@ -4034,13 +4034,19 @@ bool ChatHandler::HandleJailCommand(const char *args)
 		return false;
 
 	std::string name = args;
-	normalizePlayerName(name);
+
+	if(!normalizePlayerName(name))
+    {
+        SendSysMessage(LANG_PLAYER_NOT_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
 
 	Player *player = objmgr.GetPlayer(name.c_str());
 
 	if(!player)
 	{
-		PSendSysMessage(LANG_NO_PLAYER);
+		PSendSysMessage(LANG_NO_PLAYER, args);
 		return true;
 	}
 
@@ -4076,7 +4082,6 @@ bool ChatHandler::HandleJailCommand(const char *args)
 	ChatHandler(player).PSendSysMessage("You have been jailed!");
 
 	PSendSysMessage("Player is now in jail.");
-
 	return true;
 }
 
@@ -4086,7 +4091,13 @@ bool ChatHandler::HandleUnjailCommand(const char *args)
 		return false;
 
 	std::string name = args;
-	normalizePlayerName(name);
+
+	if(!normalizePlayerName(name))
+    {
+        SendSysMessage(LANG_PLAYER_NOT_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
 
 	Player *player = objmgr.GetPlayer(name.c_str());
 
@@ -4102,7 +4113,7 @@ bool ChatHandler::HandleUnjailCommand(const char *args)
 		return true;
 	}
 
-	// Teleport to main cities - I may change this later
+	// Teleport to main cities - I will change this later
 	if(player->GetTeam() == HORDE)
 		player->TeleportTo(1,1630.178955,-4373.479492,31.249947,3.55); // Orgrimmar
 	else
@@ -4111,6 +4122,5 @@ bool ChatHandler::HandleUnjailCommand(const char *args)
 	PSendSysMessage("Player is now unjailed.");
 
 	ChatHandler(player).PSendSysMessage("You have been removed from the jail.");
-
 	return true;
 }
