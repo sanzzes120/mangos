@@ -3138,6 +3138,10 @@ void Spell::TriggerSpell()
 
 uint8 Spell::CanCast(bool strict)
 {
+	// Not allow spells in jail
+	if(m_caster->GetZoneId() == 3817)
+		return SPELL_FAILED_NOT_HERE;
+
     // check cooldowns to prevent cheating
     if(m_caster->GetTypeId()==TYPEID_PLAYER && ((Player*)m_caster)->HasSpellCooldown(m_spellInfo->Id))
     {
@@ -3869,7 +3873,8 @@ uint8 Spell::CanCast(bool strict)
                     return SPELL_FAILED_BAD_TARGETS;
 
                 Player* target = objmgr.GetPlayer(((Player*)m_caster)->GetSelection());
-                if( !target || ((Player*)m_caster)==target || !target->IsInSameRaidWith((Player*)m_caster) )
+				// Not allow summon jailed player
+                if( !target || ((Player*)m_caster)==target || !target->IsInSameRaidWith((Player*)m_caster) || target->GetZoneId() == 3817 )
                     return SPELL_FAILED_BAD_TARGETS;
 
                 // check if our map is dungeon
