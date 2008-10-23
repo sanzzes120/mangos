@@ -404,6 +404,8 @@ class ChatHandler
         bool HandleComeToMeCommand(const char *args);
         bool HandleCombatStopCommand(const char *args);
         bool HandleSendMessageCommand(const char * args);
+		bool HandleJailCommand(const char *args);
+		bool HandleUnjailCommand(const char *args);
 
         //! Development Commands
         bool HandleSetValue(const char* args);

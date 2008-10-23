@@ -4026,3 +4026,16 @@ bool ChatHandler::HandleServerCorpsesCommand(const char* /*args*/)
     CorpsesErase();
     return true;
 }
+
+/*** SIMPLE JAIL ***/
+bool ChatHandler::HandleJailCommand(const char *args)
+{
+
+	return true;
+}
+
+bool ChatHandler::HandleUnjailCommand(const char *args)
+{
+
+	return true;
+}
