@@ -4030,12 +4030,87 @@ bool ChatHandler::HandleServerCorpsesCommand(const char* /*args*/)
 /*** SIMPLE JAIL ***/
 bool ChatHandler::HandleJailCommand(const char *args)
 {
+	if(!*args)
+		return false;
+
+	std::string name = args;
+	normalizePlayerName(name);
+
+	Player *player = objmgr.GetPlayer(name.c_str());
+
+	if(!player)
+	{
+		PSendSysMessage(LANG_NO_PLAYER);
+		return true;
+	}
+
+	// GMs cannot be jailed
+	if(player->GetSession()->GetSecurity() != SEC_PLAYER)
+	{
+		PSendSysMessage("Player is a GM.");
+		return true;
+	}
+
+	if(player->IsBeingTeleported())
+	{
+		PSendSysMessage(LANG_IS_TELEPORTED, player->GetName());
+		return true;
+	}
+
+	// Stop flight if player using taxi
+	if(player->isInFlight())
+	{
+		player->GetMotionMaster()->MovementExpired();
+		player->m_taxi.ClearTaxiDestinations();
+	}
+
+	if(player->IsInJail())
+	{
+		PSendSysMessage("Player is already in jail.");
+		return true;
+	}
+
+	// Teleport player to jail - Current position is in a huge box (zone 3817)
+	//                 map  X  Y    Z   orient.
+	player->TeleportTo( 13, 7, 1, -144, 3 );
+	ChatHandler(player).PSendSysMessage("You have been jailed!");
+
+	PSendSysMessage("Player is now in jail.");
 
 	return true;
 }
 
 bool ChatHandler::HandleUnjailCommand(const char *args)
 {
+	if(!*args)
+		return false;
+
+	std::string name = args;
+	normalizePlayerName(name);
+
+	Player *player = objmgr.GetPlayer(name.c_str());
+
+	if(!player)
+	{
+		PSendSysMessage(LANG_NO_PLAYER, args);
+		return true;
+	}
+
+	if(!player->IsInJail())
+	{
+		PSendSysMessage("Player is not in jail and cannot be unjailed.");
+		return true;
+	}
+
+	// Teleport to main cities - I may change this later
+	if(player->GetTeam() == HORDE)
+		player->TeleportTo(1,1630.178955,-4373.479492,31.249947,3.55); // Orgrimmar
+	else
+		player->TeleportTo(0,-8829.375,626.014465,93.975227,3.94); // Stormwind
+
+	PSendSysMessage("Player is now unjailed.");
+
+	ChatHandler(player).PSendSysMessage("You have been removed from the jail.");
 
 	return true;
 }
