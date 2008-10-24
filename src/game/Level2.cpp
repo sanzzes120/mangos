@@ -4187,7 +4187,7 @@ bool ChatHandler::HandleListjailCommand(const char* /*args*/)
 	// Save all players for updated positions
 	ObjectAccessor::Instance().SaveAllPlayers();
 
-	QueryResult *result = CharacterDatabase.PQuery("SELECT name FROM characters WHERE zone = '3817'");
+	QueryResult *result = CharacterDatabase.PQuery("SELECT name,online FROM characters WHERE zone = '3817'");
 
 	if(result)
 	{
@@ -4202,8 +4202,12 @@ bool ChatHandler::HandleListjailCommand(const char* /*args*/)
             Field *fields = result->Fetch();
 
 			std::string name = fields[0].GetCppString();
+			uint8 online = fields[1].GetUInt8();
 
-			PSendSysMessage("%20s", name.c_str() );
+			if(online == 0)
+				PSendSysMessage("%20s (offline)", name.c_str() );
+			else
+				PSendSysMessage("%20s", name.c_str() );
         
 		}while( result->NextRow() );
 
