@@ -528,6 +528,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "sendmessage",    SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleSendMessageCommand,         "", NULL },
 		{ "jail",           SEC_GAMEMASTER,     false, &ChatHandler::HandleJailCommand,                "", NULL },
 		{ "unjail",         SEC_GAMEMASTER,     false, &ChatHandler::HandleUnjailCommand,              "", NULL },
+		{ "listjail",       SEC_GAMEMASTER,     false, &ChatHandler::HandleListjailCommand,            "", NULL },
 
         { NULL,             0,                  false, NULL,                                           "", NULL }
     };

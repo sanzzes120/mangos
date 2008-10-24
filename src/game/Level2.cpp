@@ -4181,3 +4181,39 @@ bool ChatHandler::HandleUnjailCommand(const char *args)
 
 	return true;
 }
+
+bool ChatHandler::HandleListjailCommand(const char* /*args*/)
+{
+	// Save all players for updated positions
+	ObjectAccessor::Instance().SaveAllPlayers();
+
+	QueryResult *result = CharacterDatabase.PQuery("SELECT name FROM characters WHERE zone = '3817'");
+
+	if(result)
+	{
+
+		PSendSysMessage("Current Jailed Players:");
+
+		PSendSysMessage("-----------------------");
+
+		do
+        {
+
+            Field *fields = result->Fetch();
+
+			std::string name = fields[0].GetCppString();
+
+			PSendSysMessage("%20s", name.c_str() );
+        
+		}while( result->NextRow() );
+
+		PSendSysMessage("-----------------------");
+
+        delete result;
+
+	}
+	else
+		PSendSysMessage("Jail empty.");
+
+	return true;
+}
