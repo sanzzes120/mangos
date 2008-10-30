@@ -4263,7 +4263,7 @@ bool ChatHandler::HandleUnjailCommand(const char *args)
 		if (result)
 		{
 			Field *fields = result->Fetch();
-			
+
 			uint16 hb_map = fields[0].GetUInt32();
 			uint16 hb_zone = fields[1].GetUInt16();
 			float hb_x = fields[2].GetFloat();
@@ -4314,7 +4314,7 @@ bool ChatHandler::HandleListjailCommand(const char* /*args*/)
 				PSendSysMessage("%20s (offline)", name.c_str() );
 			else
 				PSendSysMessage("%20s", name.c_str() );
-        
+
 		}while( result->NextRow() );
 
 		PSendSysMessage("-----------------------");
