@@ -4156,6 +4156,7 @@ bool ChatHandler::HandleNpcUnFollowCommand(const char* /*args*/)
     return true;
 }
 
+
 /*** SIMPLE JAIL ***/
 bool ChatHandler::HandleJailCommand(const char *args)
 {

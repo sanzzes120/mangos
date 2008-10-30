@@ -80,7 +80,9 @@ enum MangosStrings
     LANG_NEW_PASSWORDS_NOT_MATCH        = 54,
     LANG_PASSWORD_TOO_LONG              = 55,
     LANG_MOTD_CURRENT                   = 56,
-    // Room for more level 0              57-99 not used
+    LANG_USING_WORLD_DB                 = 57,
+    LANG_USING_SCRIPT_LIB               = 58,
+    // Room for more level 0              59-99 not used
 
     // level 1 chat
     LANG_GLOBAL_NOTIFY                  = 100,
@@ -164,8 +166,9 @@ enum MangosStrings
 
     LANG_MAIL_SENT                      = 169,
     LANG_SOUND_NOT_EXIST                = 170,
-    LANG_TELEPORTED_TO_BY_CONSOLE       = 171,
-    // Room for more level 1              172-199 not used
+    //                                    171,              // not used
+    LANG_CONSOLE_COMMAND                = 172,
+    // Room for more level 1              173-199 not used
 
     // level 2 chat
     LANG_NO_SELECTION                   = 200,
@@ -314,7 +317,14 @@ enum MangosStrings
     LANG_GM_OFF                         = 333,
     LANG_GM_CHAT_ON                     = 334,
     LANG_GM_CHAT_OFF                    = 335,
-    // Room for more level 2              336-399 not used
+    LANG_YOU_REPAIR_ITEMS               = 336,
+    LANG_YOUR_ITEMS_REPAIRED            = 337,
+    LANG_YOU_SET_WATERWALK              = 338,
+    LANG_YOUR_WATERWALK_SET             = 339,
+    LANG_CREATURE_FOLLOW_YOU_NOW        = 340,
+    LANG_CREATURE_NOT_FOLLOW_YOU        = 341,
+    LANG_CREATURE_NOT_FOLLOW_YOU_NOW    = 342,
+    // Room for more level 2              343-399 not used
 
     // level 3 chat
     LANG_SCRIPTS_RELOADED               = 400,
@@ -687,7 +697,9 @@ enum MangosStrings
 
     // FREE IDS                           1200-9999
 
-    // Use for not-in-svn patches         10000-10999
+    // Use for not-in-offcial-sources patches
+    //                                    10000-10999
+
     // Use for custom patches             11000-11999
 
     // NOT RESERVED IDS                   12000-
