@@ -4260,6 +4260,10 @@ bool ChatHandler::HandleJailCommand(const char *args)
 			player->m_taxi.ClearTaxiDestinations();
 		}
 
+        // Remove player from group
+        if(player->GetGroup())
+            player->RemoveFromGroup();
+
 		if(player->IsInJail())
 		{
 			PSendSysMessage("Player %s is already in jail.", name.c_str());
