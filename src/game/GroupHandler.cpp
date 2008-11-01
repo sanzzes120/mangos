@@ -100,7 +100,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
     }
 
     // Jailed player - not allowed
-    if(player->IsInJail())
+    if(player->IsInJail() || GetPlayer()->IsInJail())
     {
         SendPartyResult(PARTY_OP_INVITE, membername, PARTY_RESULT_TARGET_UNFRIENDLY);
         return;
