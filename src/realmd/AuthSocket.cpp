@@ -508,15 +508,13 @@ bool AuthSocket::_HandleLogonProof()
 
     ///- Check if the client has one of the expected version numbers
     bool valid_version=false;
-    int accepted_versions[]=EXPECTED_MANGOS_CLIENT_BUILD;
-    for(int i=0;accepted_versions[i];i++)
-    {
-        if(_build==accepted_versions[i])
-        {
+    int MinBuild = sConfig.GetIntDefault("MinBuild", 8606);
+	int MaxBuild = sConfig.GetIntDefault("MaxBuild", 8606);
+
+	if(_build >= MinBuild && _build <= MaxBuild)
             valid_version=true;
-            break;
-        }
-    }
+	else
+		valid_version=false;
 
     /// <ul><li> If the client has no valid version
     if(!valid_version)

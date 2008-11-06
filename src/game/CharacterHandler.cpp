@@ -745,6 +745,85 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
     if(sWorld.IsShutdowning())
         sWorld.ShutdownMsg(true,pCurrChar);
 
+	if(sWorld.getConfig(CONFIG_ALWAYS_MAXSKILL)) //ImpConfig - Max weapon skill when logging in
+		pCurrChar->UpdateSkillsToMaxSkillsForLevel();
+
+	//ImpConfig - Check if player has logged in before -- Some functions doesn't work correctly in Player::Create
+	QueryResult *result = CharacterDatabase.PQuery("SELECT guid FROM has_logged_in_before WHERE guid = %u",pCurrChar->GetGUIDLow());
+	if(!result)
+	{
+		CharacterDatabase.PExecute("INSERT INTO has_logged_in_before VALUES (%u)",pCurrChar->GetGUIDLow());
+
+		//Reputations if "StartAllReputation" is enabled
+		if(sWorld.getConfig(CONFIG_START_ALL_REP))
+		{
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(942),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(935),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(936),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(1011),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(970),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(967),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(989),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(932),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(934),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(1038),42999);
+			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(1077),42999);
+
+			// Factions depending on team, like cities and some more
+			switch(pCurrChar->GetTeam())
+			{
+			case ALLIANCE:
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(72),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(47),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(69),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(930),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(730),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(978),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(54),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(946),42999);
+				break;
+			case HORDE:
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(76),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(68),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(81),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(911),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(729),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(941),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(530),42999);
+				pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(947),42999);
+				break;
+			}
+
+		}
+
+        // Add to default guild if PlayerStart.DefaultGuildId is used
+        uint32 defaultGuild = sWorld.getConfig(CONFIG_DEFAULT_GUILD_ID);
+        if( defaultGuild != 0 )
+        {
+            Guild* guild = objmgr.GetGuildById(defaultGuild);
+            if(guild)
+            {
+                if(guild->AddMember(pCurrChar->GetGUID(), guild->GetLowestRank()))
+                {
+                    guild->LogGuildEvent(GUILD_EVENT_LOG_JOIN_GUILD, pCurrChar->GetGUIDLow(), 0, 0);
+
+                    WorldPacket data(SMSG_GUILD_EVENT, (2+10));
+                    data << (uint8)GE_JOINED;
+                    data << (uint8)1;
+                    data << pCurrChar->GetName();
+                    guild->BroadcastPacket(&data);
+                }
+            }
+            else
+                sLog.outError("ImpConfig: Guild id %u is used for PlayerStart.DefaultGuildId but the guild doesn't exist.", defaultGuild);
+        }
+
+	}
+    delete result;
+
+	if(sWorld.getConfig(CONFIG_START_ALL_TAXI))
+		pCurrChar->SetTaxiCheater(true);
+
     if(pCurrChar->isGameMaster())
         SendNotification(LANG_GM_ON);
 

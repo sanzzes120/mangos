@@ -296,8 +296,8 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & /*recv_data*/ )
         return;
     }
 
-    //instant logout in taverns/cities or on taxi
-    if(GetPlayer()->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING) || GetPlayer()->isInFlight())
+    //instant logout in taverns/cities or on taxi or if its enabled in mangosd.conf (ImpConfig)
+	if(GetPlayer()->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING) || GetPlayer()->isInFlight() || sWorld.getConfig(CONFIG_INSTANT_LOGOUT))
     {
         LogoutPlayer(true);
         return;
@@ -392,6 +392,13 @@ void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
 
     if(newZone != _player->GetZoneId())
         GetPlayer()->SendInitWorldStates();                 // only if really enters to new zone, not just area change, works strange...
+
+	// ImpConfig: AntiCheat.GMIsland
+	if(sWorld.getConfig(CONFIG_KICK_FROM_GMISLAND))
+	{
+		if(newZone == 876 && GetPlayer()->GetSession()->GetSecurity() == SEC_PLAYER)
+			_player->TeleportTo(13,0,0,0,0);
+	}
 
     GetPlayer()->UpdateZone(newZone);
 }
