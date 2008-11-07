@@ -748,13 +748,13 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder * holder)
 	if(sWorld.getConfig(CONFIG_ALWAYS_MAXSKILL)) //ImpConfig - Max weapon skill when logging in
 		pCurrChar->UpdateSkillsToMaxSkillsForLevel();
 
-	//ImpConfig - Check if player has logged in before -- Some functions doesn't work correctly in Player::Create
+	//ImpConfig - Check if player has logged in before -- Some functions doesn't work correctly in Player::Create so I put them here instead
 	QueryResult *result = CharacterDatabase.PQuery("SELECT guid FROM has_logged_in_before WHERE guid = %u",pCurrChar->GetGUIDLow());
 	if(!result)
 	{
 		CharacterDatabase.PExecute("INSERT INTO has_logged_in_before VALUES (%u)",pCurrChar->GetGUIDLow());
 
-		//Reputations if "StartAllReputation" is enabled
+		//Reputations if "PlayerStart.AllReputation" is enabled
 		if(sWorld.getConfig(CONFIG_START_ALL_REP))
 		{
 			pCurrChar->SetFactionReputation(sFactionStore.LookupEntry(942),42999);

@@ -583,16 +583,10 @@ bool Player::Create( uint32 guidlow, std::string name, uint8 race, uint8 class_,
 	else
 		SetUInt32Value( UNIT_FIELD_LEVEL, sWorld.getConfig(CONFIG_START_PLAYER_LEVEL) );
 
-	// set starting gold - ImpConfig
+	// Starting things in impconfig
 	SetUInt32Value( PLAYER_FIELD_COINAGE, sWorld.PlayerStartGold()*10000 );
-
-	// set starting honor - ImpConfig
 	SetUInt32Value( PLAYER_FIELD_HONOR_CURRENCY, sWorld.getConfig(CONFIG_PLAYER_START_HONOR) );
-
-	// set starting arena pts - ImpConfig
 	SetUInt32Value( PLAYER_FIELD_ARENA_CURRENCY, sWorld.getConfig(CONFIG_PLAYER_START_ARENAPTS) );
-
-	// start with every map explored - ImpConfig
 	if(sWorld.getConfig(CONFIG_START_ALL_EXPLORED))
 	{
 		for (uint8 i=0; i<64; i++)
@@ -773,7 +767,7 @@ void Player::HandleDrowning()
     if(!m_isunderwater)
         return;
 
-    //if players is GM, have waterbreath, dead or breathing is disabled
+    //if player is GM, have waterbreath, is dead or if breathing is disabled then return
 	if(sWorld.getConfig(CONFIG_DISABLE_BREATHING) || waterbreath || isGameMaster() || !isAlive())
     {
         StopMirrorTimer(BREATH_TIMER);
@@ -5985,9 +5979,11 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor, bool pvpt
 
 		if(uVictim->GetTypeId() == TYPEID_PLAYER)
 		{
-			// Check if allowed to receive it in current map
+			// Check if player is allowed to receive a token in current map
 			uint8 MapType = sWorld.getConfig(CONFIG_PVP_TOKEN_MAP_TYPE);
-			if(MapType == 1 && !InBattleGround() && !HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) || MapType == 2 && !HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) || MapType == 3 && !InBattleGround())
+			if( MapType == 1 && !InBattleGround() && !HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) ||
+                MapType == 2 && !HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_FFA_PVP) ||
+                MapType == 3 && !InBattleGround())
 				return true;
 
 			uint32 noSpaceForCount = 0;
@@ -6012,7 +6008,7 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor, bool pvpt
 			ChatHandler(this).PSendSysMessage("You have been awarded a token for slaying another player.");
 		}
 	}
-// ---------PvP Token System end(ImpConfig) ----------- //
+    // ---------PvP Token System end(ImpConfig) ----------- //
     return true;
 }
 

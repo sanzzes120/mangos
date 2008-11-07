@@ -214,19 +214,9 @@ World::AddSession_ (WorldSession* s)
     //login as a session and queue the socket that we are using
     --Sessions;
 
-    if(sWorld.getConfig(CONFIG_QUEUE_FOR_GM))
+    if (pLimit > 0 && Sessions >= pLimit) // Add to queue
     {
-	  if (pLimit > 0 && Sessions >= pLimit && s->GetSecurity () < SEC_ADMINISTRATOR )
-	    {
-	      AddQueuedPlayer (s);
-	      UpdateMaxSessionCounters ();
-	      sLog.outDetail ("PlayerQueue: Account id %u is in Queue Position (%u).", s->GetAccountId (), ++QueueSize);
-	      return;
-	    }
-    }
-    else
-    {
-        if (pLimit > 0 && Sessions >= pLimit && s->GetSecurity () == SEC_PLAYER )
+        if(s->GetSecurity() == SEC_PLAYER || sWorld.getConfig(CONFIG_QUEUE_FOR_GM) && s->GetSecurity() < SEC_ADMINISTRATOR)
         {
             AddQueuedPlayer (s);
             UpdateMaxSessionCounters ();

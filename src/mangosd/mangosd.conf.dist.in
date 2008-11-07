@@ -1098,13 +1098,12 @@ Ra.Secure = 1
 #
 #	PlayerStart.AllReputation
 #		Players will start with most of the high level reputations that are needed for items, mounts etc.
-#		If there are any reputation faction you want to be added, just tell me.
+#		If there are any reputation factions you want added, post a feature request on the forum
 #
 #	PlayerStart.AllSpells
 #		If enabled, players will start with all their class spells (not talents). Useful for instant 70 servers.
 #		You must import playercreateinfo_spell_custom.sql, it's included in the SQL folder.
-#		Default: 0 - off
-#				 1 - on
+#		Default: 0 - off, 1 - on
 #
 #	PlayerStart.MapsExplored
 #		Players will start with all maps explored if enabled
@@ -1118,17 +1117,15 @@ Ra.Secure = 1
 #
 #	GamemasterStartLevel
 #		GM starting level
-#		Default: 70 Min,max: 1 - 255
+#		Default: 70 Min, max: 1 - 255
 #
 #	PlayerInstantLogout
 #		Enable or disable instant logout for all players (NOT in combat/while dueling/while falling)
-#		Default: 0 - off
-#			 	1 - on
+#		Default: 0 - off, 1 - on
 #
 #	EnableQueueForGMs
 #		GMs will also be added to the login queue (not gmlvl 3+) if enabled. Useful for GM servers.
-#		Default: 0 - off
-#				 1 - on
+#		Default: 0 - off, 1 - on
 #
 #	HonorPointsAfterDuel
 #		The amount of honor points the duel winner will get after a duel.
@@ -1145,9 +1142,7 @@ Ra.Secure = 1
 #
 #	DisableHordeOrAlliance
 #		This allows you to temporary disable creation of Horde or Alliance on unbalanced PvP servers
-#		Default: 0 - None
-#				1 - Disable Alliance
-#				2 - Disable Horde
+#		Default: 0 - None, 1 - Disable Alliance, 2 - Disable Horde
 #
 #	PvPToken.Enable
 #		Enable/disable PvP Token System. Players will get a token after slaying another player that gives honor.
@@ -1160,18 +1155,14 @@ Ra.Secure = 1
 #		1 - In battlegrounds AND FFA areas only
 #
 #	PvPToken.ItemID
-#		The item players will get after killing someone if PvP Token system is enabled.
+#		The item players will get after killing an enemy if PvP Token system is enabled.
 #		Default: 29434 - Badge of justice
 #
 #	PvPToken.ItemCount
 #		Modify the item ID count - Default: 1
 #
 #	NoResetTalentsCost
-#		Enable or disable no cost when reseting talents
-#
-#	BGQueueSendStatus
-#		When joining a queue for a battleground a message will be sent to the player with the current queue status
-#		on how many players currently in queue and how many more is needed.
+#		Enable or disable no cost for talent resetting
 #
 #	PlayerStart.DefaultGuildId
 #		New players will automatically get added to this guild if a ID is used.

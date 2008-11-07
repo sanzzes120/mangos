@@ -393,11 +393,17 @@ void WorldSession::HandleZoneUpdateOpcode( WorldPacket & recv_data )
     if(newZone != _player->GetZoneId())
         GetPlayer()->SendInitWorldStates();                 // only if really enters to new zone, not just area change, works strange...
 
-	// ImpConfig: AntiCheat.GMIsland
+	// ImpConfig: AntiCheat.GMIsland - Teleport to homebind if new zone is GM island
 	if(sWorld.getConfig(CONFIG_KICK_FROM_GMISLAND))
 	{
 		if(newZone == 876 && GetPlayer()->GetSession()->GetSecurity() == SEC_PLAYER)
-			_player->TeleportTo(13,0,0,0,0);
+        {
+            _player->TeleportTo(
+                _player->m_homebindMapId,
+                _player->m_homebindX,
+                _player->m_homebindY,
+                _player->m_homebindZ, 0);
+        }
 	}
 
     GetPlayer()->UpdateZone(newZone);
