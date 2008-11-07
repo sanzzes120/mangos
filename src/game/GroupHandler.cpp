@@ -643,7 +643,7 @@ void WorldSession::HandleRaidReadyCheckOpcode( WorldPacket & recv_data )
     }
 }
 
-void WorldSession::HandleRaidReadyCheckFinishOpcode( WorldPacket & recv_data )
+void WorldSession::HandleRaidReadyCheckFinishOpcode( WorldPacket & /*recv_data*/ )
 {
     //Group* group = GetPlayer()->GetGroup();
     //if(!group)

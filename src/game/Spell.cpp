@@ -346,7 +346,7 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
 
     m_powerCost = 0;                                        // setup to correct value in Spell::prepare, don't must be used before.
     m_casttime = 0;                                         // setup to correct value in Spell::prepare, don't must be used before.
-    m_timer = 0;                                            // will set to castime in preper
+    m_timer = 0;                                            // will set to castime in prepare
 
     m_needAliveTargetMask = 0;
 
@@ -652,7 +652,7 @@ void Spell::FillTargetMap()
 
         for (std::list<Unit*>::iterator itr = tmpUnitMap.begin() ; itr != tmpUnitMap.end();)
         {
-            if(!CheckTarget(*itr, i, false ))
+            if (!CheckTarget (*itr, i))
             {
                 itr = tmpUnitMap.erase(itr);
                 continue;
@@ -1483,7 +1483,7 @@ void Spell::SetTargetMap(uint32 i,uint32 cur,std::list<Unit*> &TagUnitMap)
             cell_lock->Visit(cell_lock, world_object_notifier, *MapManager::Instance().GetMap(m_caster->GetMapId(), m_caster));
             cell_lock->Visit(cell_lock, grid_object_notifier, *MapManager::Instance().GetMap(m_caster->GetMapId(), m_caster));
         }break;
-        // TARGET_SINGLE_PARTY means that the spells can only be casted on a party member and not on the caster (some sceals, fire shield from imp, etc..)
+        // TARGET_SINGLE_PARTY means that the spells can only be casted on a party member and not on the caster (some seals, fire shield from imp, etc..)
         case TARGET_SINGLE_PARTY:
         {
             Unit *target = m_targets.getUnitTarget();
@@ -2884,7 +2884,7 @@ void Spell::SendChannelStart(uint32 duration)
 {
     WorldObject* target = NULL;
 
-    // select first not rsusted target from target list for _0_ effect
+    // select first not resisted target from target list for _0_ effect
     if(!m_UniqueTargetInfo.empty())
     {
         for(std::list<TargetInfo>::iterator itr= m_UniqueTargetInfo.begin();itr != m_UniqueTargetInfo.end();++itr)
@@ -3142,7 +3142,7 @@ void Spell::TriggerSpell()
 {
     for(TriggerSpells::iterator si=m_TriggerSpells.begin(); si!=m_TriggerSpells.end(); ++si)
     {
-        Spell* spell = new Spell(m_caster, (*si), true, m_originalCasterGUID, this->m_selfContainer);
+        Spell* spell = new Spell(m_caster, (*si), true, m_originalCasterGUID, m_selfContainer);
         spell->prepare(&m_targets);                         // use original spell original targets
     }
 }
@@ -3346,8 +3346,6 @@ uint8 Spell::CanCast(bool strict)
                 m_spellInfo->EffectImplicitTargetA[j] == TARGET_SCRIPT_COORDINATES ||
                 m_spellInfo->EffectImplicitTargetB[j] == TARGET_SCRIPT_COORDINATES )
             {
-                bool okDoo = false;
-
                 SpellScriptTarget::const_iterator lower = spellmgr.GetBeginSpellScriptTarget(m_spellInfo->Id);
                 SpellScriptTarget::const_iterator upper = spellmgr.GetEndSpellScriptTarget(m_spellInfo->Id);
                 if(lower==upper)
@@ -4018,7 +4016,7 @@ int16 Spell::PetCanCast(Unit* target)
     if(!m_caster->isAlive())
         return SPELL_FAILED_CASTER_DEAD;
 
-    if(m_caster->IsNonMeleeSpellCasted(false))              //prevent spellcast interuption by another spellcast
+    if(m_caster->IsNonMeleeSpellCasted(false))              //prevent spellcast interruption by another spellcast
         return SPELL_FAILED_SPELL_IN_PROGRESS;
     if(m_caster->isInCombat() && IsNonCombatSpell(m_spellInfo))
         return SPELL_FAILED_AFFECTING_COMBAT;
@@ -4109,7 +4107,7 @@ uint8 Spell::CheckCasterAuras() const
             else if(m_spellInfo->EffectApplyAuraName[i] == SPELL_AURA_DISPEL_IMMUNITY)
                 dispel_immune |= GetDispellMask(DispelType(m_spellInfo->EffectMiscValue[i]));
         }
-        //immune movement impairement and loss of control
+        //immune movement impairment and loss of control
         if(m_spellInfo->Id==(uint32)42292)
             mechanic_immune = IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK;
     }
@@ -4592,7 +4590,7 @@ uint8 Spell::CheckItems()
                     return SPELL_FAILED_CANT_BE_DISENCHANTED;
 
                 uint32 item_quality = itemProto->Quality;
-                // 2.0.x addon: Check player enchanting level agains the item desenchanting requirements
+                // 2.0.x addon: Check player enchanting level against the item disenchanting requirements
                 uint32 item_disenchantskilllevel = itemProto->RequiredDisenchantSkill;
                 if (item_disenchantskilllevel == uint32(-1))
                     return SPELL_FAILED_CANT_BE_DISENCHANTED;
@@ -4845,7 +4843,7 @@ CurrentSpellTypes Spell::GetCurrentContainer()
         return(CURRENT_GENERIC_SPELL);
 }
 
-bool Spell::CheckTarget( Unit* target, uint32 eff, bool hitPhase )
+bool Spell::CheckTarget( Unit* target, uint32 eff )
 {
     // Check targets for creature type mask and remove not appropriate (skip explicit self target case, maybe need other explicit targets)
     if(m_spellInfo->EffectImplicitTargetA[eff]!=TARGET_SELF )
