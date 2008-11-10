@@ -88,7 +88,7 @@ struct SpellModifier
     Spell const* lastAffected;
 };
 
-typedef HM_NAMESPACE::hash_map<uint16, PlayerSpell*> PlayerSpellMap;
+typedef UNORDERED_MAP<uint16, PlayerSpell*> PlayerSpellMap;
 typedef std::list<SpellModifier*> SpellModList;
 
 struct SpellCooldown
@@ -676,12 +676,6 @@ struct ItemPosCount
     uint8 count;
 };
 typedef std::vector<ItemPosCount> ItemPosCountVec;
-
-enum SwitchWeapon
-{
-    DEFAULT_SWITCH_WEAPON       = 1500,                     //cooldown in ms
-    ROGUE_SWITCH_WEAPON         = 1000
-};
 
 enum TradeSlots
 {
@@ -1367,7 +1361,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint8 unReadMails;
         time_t m_nextMailDelivereTime;
 
-        typedef HM_NAMESPACE::hash_map<uint32, Item*> ItemMap;
+        typedef UNORDERED_MAP<uint32, Item*> ItemMap;
 
         ItemMap mMitems;                                    //template defined in objectmgr.cpp
 
@@ -1994,7 +1988,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         /***                 INSTANCE SYSTEM                   ***/
         /*********************************************************/
 
-        typedef HM_NAMESPACE::hash_map< uint32 /*mapId*/, InstancePlayerBind > BoundInstancesMap;
+        typedef UNORDERED_MAP< uint32 /*mapId*/, InstancePlayerBind > BoundInstancesMap;
 
         void UpdateHomebindTime(uint32 time);
 
