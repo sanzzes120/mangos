@@ -876,7 +876,6 @@ void World::LoadConfigSettings(bool reload)
 		m_configs[CONFIG_GM_START_LEVEL] = 1;
 
 	m_configs[CONFIG_INSTANT_LOGOUT] = sConfig.GetBoolDefault("PlayerInstantLogout", false);
-	m_configs[CONFIG_BG_START_MUSIC] = sConfig.GetBoolDefault("MusicInBattleground", false);
 	m_configs[CONFIG_START_ALL_SPELLS] = sConfig.GetBoolDefault("PlayerStart.AllSpells", false);
 	m_configs[CONFIG_QUEUE_FOR_GM] = sConfig.GetBoolDefault("EnableQueueForGMs", false);
 	m_configs[CONFIG_HONOR_AFTER_DUEL] = sConfig.GetIntDefault("HonorPointsAfterDuel", 0);
@@ -885,7 +884,6 @@ void World::LoadConfigSettings(bool reload)
 	m_configs[CONFIG_KICK_FROM_GMISLAND] = sConfig.GetBoolDefault("AntiCheat.GMIsland", false);
 	m_configs[CONFIG_START_ALL_EXPLORED] = sConfig.GetBoolDefault("PlayerStart.MapsExplored", false);
 	m_configs[CONFIG_DISABLE_BREATHING] = sConfig.GetBoolDefault("DisableWaterBreath", false);
-	m_configs[CONFIG_DISABLE_RES_SICKNESS] = sConfig.GetBoolDefault("DisableResurrectSickness", false);
 	m_configs[CONFIG_START_ALL_REP] = sConfig.GetBoolDefault("PlayerStart.AllReputation", false);
 	m_configs[CONFIG_ALWAYS_MAXSKILL] = sConfig.GetBoolDefault("AlwaysMaxWeaponSkill", false);
 	m_configs[CONFIG_START_ALL_TAXI] = sConfig.GetBoolDefault("PlayerStart.AllFlightPaths", false);

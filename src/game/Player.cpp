@@ -3746,7 +3746,7 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     // some items limited to specific map
     DestroyZoneLimitedItem( true, GetZoneId());
 
-   if(sWorld.getConfig(CONFIG_DISABLE_RES_SICKNESS) || !applySickness || getLevel() <= 10)
+   if(!applySickness || getLevel() <= 10)
         return;
 
     //Characters from level 1-10 are not affected by resurrection sickness.

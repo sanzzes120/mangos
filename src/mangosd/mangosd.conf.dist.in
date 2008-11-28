@@ -106,9 +106,6 @@ BindIP = "0.0.0.0"
 #	DisableWaterBreath
 #		Disable/enable waterbreathing for players
 #
-#	DisableResurrectSickness
-#		Players wont get any resurrect sickness when speaking with a spirit healer if this is enabled
-#
 #	AlwaysMaxWeaponSkill
 #		Players will automatically gain max weapon/defense skill when logging in, leveling up etc.
 #
@@ -155,7 +152,6 @@ PlayerInstantLogout = 0
 EnableQueueForGMs = 0
 HonorPointsAfterDuel = 0
 DisableWaterBreath = 0
-DisableResurrectSickness = 0
 AlwaysMaxWeaponSkill = 0
 DisableHordeOrAlliance = 0
 PvPToken.Enable = 0
